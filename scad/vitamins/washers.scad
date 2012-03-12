@@ -14,6 +14,7 @@ M4_washer  =      [4,   9, 0.9, false];
 M5_penny_washer = [5,  20, 1.4, false];
 M6_washer  =      [6,  12, 1.5, false];
 M8_washer =       [8,  16, 1.5, false];
+M12_washer =      [12, 22, 1.5, false];
 
 M3_rubber_washer= [3,  10, 1.5, true];
 

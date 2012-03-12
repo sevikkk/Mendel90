@@ -11,6 +11,7 @@ M3_nut = [3, 6.4, 2.4, 4, M3_washer, M3_nut_trap_depth];
 M4_nut = [4, 8.1, 3.2, 5, M4_washer, M4_nut_trap_depth];
 M6_nut = [6, 11.5,  5, 8, M6_washer, M6_nut_depth];
 M8_nut = [8, 15,  6.5, 8, M8_washer, M8_nut_depth];
+M12_nut = [12, 21,  9.5, 8, M12_washer, M12_nut_depth];
 
 function nut_radius(type) = type[1] / 2;
 function nut_flat_radius(type) = nut_radius(type) * cos(30);
