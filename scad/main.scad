@@ -120,12 +120,15 @@ module z_axis_assembly() {
 //
 // Y axis
 //
-Y_bar_length =  Y_travel + Y_carriage_depth + 2 * axis_endstop_clearance;
+Y_bear_mounts_depth = 500 - Y_travel - 2 * axis_endstop_clearance;
+
+Y_bar_length =  Y_travel + Y_bear_mounts_depth + 2 * axis_endstop_clearance;
 
 Y_bar_length2 = Y_travel + bearing_mount_length(Y_bearings) + 2 * bar_clamp_depth + axis_endstop_clearance + bar_clamp_switch_y_offset();
 
 Y_bar_spacing = Y_carriage_width - bearing_mount_width(Y_bearings);
-Y_bearing_inset = bearing_mount_length(Y_bearings) / 2 + bar_clamp_depth;
+//Y_bearing_inset = bearing_mount_length(Y_bearings) / 2 + bar_clamp_depth;
+Y_bearing_inset = (Y_carriage_width - (Y_bar_length - bar_clamp_depth * 2 - Y_travel - bearing_mount_length(Y_bearings)))/2 ;
 
 Y_belt_motor_offset = 13 + belt_width(Y_belt) / 2;
 
