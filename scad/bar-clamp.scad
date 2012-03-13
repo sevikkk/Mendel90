@@ -10,7 +10,7 @@
 include <conf/config.scad>
 include <positions.scad>
 
-nut_trap_meat = 4;                  // how much plastic above the nut trap
+nut_trap_meat = 5.5;                  // how much plastic above the nut trap
 wall = 3;
 tab_height = 5;
 
@@ -215,6 +215,11 @@ if(0)
     bar_clamps_stl();
 else {
     z_bar_clamp_assembly(Z_bar_dia, gantry_setback, bar_clamp_depth, true);
+
+//   difference() {
+//    z_bar_clamp_assembly(Z_bar_dia, gantry_setback, bar_clamp_depth, true);
+//    translate ([0,-50,-10]) cube ([10,100,100], center=false);
+//   }
     //bar_clamp(Z_bar_dia, gantry_setback, bar_clamp_depth, true, false);
 
     //translate([30, 0, 0]) y_bar_clamp_assembly(Y_bar_dia, Y_bar_height, bar_clamp_depth, true);
