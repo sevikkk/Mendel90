@@ -17,8 +17,8 @@ Y_motor = NEMA17;
 Z_motor = NEMA17;
 
 X_travel = 303;
-Y_travel = 300;
-Z_travel = 300;
+Y_travel = 250;
+Z_travel = 300 + (500-426.5);
 
 bed_depth = 310;
 bed_width = 310;
