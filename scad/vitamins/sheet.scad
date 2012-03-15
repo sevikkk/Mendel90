@@ -18,6 +18,7 @@
 MDF6     = [ "MD", "MDF sheet",     6, MDF_brown, true];    // ~1/4"
 MDF10    = [ "MD", "MDF sheet",    10, MDF_brown, true];    // ~3/8"
 MDF12    = [ "MD", "MDF sheet",    12, MDF_brown, true];    // ~1/2"
+MDF18    = [ "MD", "MDF sheet",    18, MDF_brown, true];    // ~6/8"
 PMMA6    = [ "AC", "Acrylic sheet", 6, acrylic_clear, false];   // ~1/4"
 PMMA8    = [ "AC", "Acrylic sheet", 8, acrylic_clear, false];   // ~5/16"
 PMMA10   = [ "AC", "Acrylic sheet",10, acrylic_clear, false];   // ~3/8"

@@ -23,10 +23,11 @@ Z_travel = 300;
 bed_depth = 310;
 bed_width = 310;
 bed_pillars = M3x20_pillar;
-bed_thickness = 1.6 + sheet_thickness(glass);    // PCB heater plus glass sheet
+bed_glass = glass2;
+bed_thickness = 1.6 + sheet_thickness(bed_glass);    // PCB heater plus glass sheet
 bed_holes = 305;
 
-base = MDF20;
+base = MDF18;
 base_corners = 0;
 
 frame = MDF12;
