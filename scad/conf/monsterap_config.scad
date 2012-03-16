@@ -7,7 +7,17 @@
 //
 // Configuration file
 //
-echo("Sturdy:");
+echo("Monsterap:");
+// Local vitamins
+
+M12_nut_depth = 9.5;
+M12_nut_radius = 11;
+M12_washer =      [12, 22, 1.5, false];
+M12_nut = [12, 21,  9.5, 8, M12_washer, M12_nut_depth];
+LM16UU = [30, 24, 16];
+T5x8 =  [5, 8,  2.25];
+MDF18    = [ "MD", "MDF sheet",    18, [0.4, 0.4, 0.2, 1    ], true];
+
 Z_bearings = LM16UU;
 Y_bearings = LM16UU;
 X_bearings = LM16UU;
@@ -26,9 +36,6 @@ bed_pillars = M3x20_pillar;
 bed_glass = glass2;
 bed_thickness = 1.6 + sheet_thickness(bed_glass);    // PCB heater plus glass sheet
 bed_holes = 305;
-
-//         [ Code, Description, Thickness, Color, Soft]
-MDF18    = [ "MD", "MDF sheet",    18, [0.4, 0.4, 0.2, 1    ], true];
 
 base = MDF18;
 base_corners = 0;
