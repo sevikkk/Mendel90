@@ -8,7 +8,6 @@
 // Belt model
 //
 T5x6 =  [5, 6,  2.25];
-T5x8 =  [5, 8,  2.25];
 T5x10 = [5, 10, 2.25];
 
 function belt_pitch(type) = type[0];

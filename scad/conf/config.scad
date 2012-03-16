@@ -49,9 +49,6 @@ M8_clearance_radius = 8.4 / 2;
 M8_nut_radius = 15.4 / 2;
 M8_nut_depth = 6.5;
 
-M12_nut_depth = 9.5;
-M12_nut_radius = 11;
-
 layer_height = 0.4;
 filament_width = layer_height * 1.5;
 min_wall = 2 * filament_width + eta;

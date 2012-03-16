@@ -27,6 +27,9 @@ bed_glass = glass2;
 bed_thickness = 1.6 + sheet_thickness(bed_glass);    // PCB heater plus glass sheet
 bed_holes = 305;
 
+//         [ Code, Description, Thickness, Color, Soft]
+MDF18    = [ "MD", "MDF sheet",    18, [0.4, 0.4, 0.2, 1    ], true];
+
 base = MDF18;
 base_corners = 0;
 
