@@ -154,6 +154,6 @@ module base_screw_hole() {
     cylinder(r = screw_pilot_hole(base_screw), h = 100, center = true);
 }
 
-bar_clamp_depth = 4 + washer_diameter(screw_washer(base_screw));           // how thick the bar clamps are
+bar_clamp_depth = 5 + washer_diameter(screw_washer(base_screw));           // how thick the bar clamps are
 bar_clamp_tab = 3 + washer_diameter(screw_washer(base_screw));             // how much the lugs stick out
 bar_clamp_band = 3;                                                        // the thickness of the strap that clamps the bar.
