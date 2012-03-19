@@ -50,11 +50,16 @@ module bearing_mount(bearing, height, endstop) {
             translate([end * (bearing_holder_width(bearing) / 2 - eta), -end * (bearing_holder_length(bearing) - bearing_clamp_tab)/2, -height])
                 rotate([0,0,90 - end * 90])
                     tab();
-        if(endstop)
+        if(endstop) {
             translate([-(bearing_holder_width(bearing) / 2 + endstop_w / 2),
                        -(bearing_holder_length(bearing) / 2 - endstop_d / 2),
                        endstop_h / 2 - height])
                 cube([endstop_w, endstop_d, endstop_h], center = true);
+            translate([-(bearing_holder_width(bearing) / 2 + endstop_w / 2),
+                       (bearing_holder_length(bearing) / 2 - endstop_d / 2),
+                       endstop_h / 2 - height])
+                cube([endstop_w, endstop_d, endstop_h], center = true);
+	}
     }
  }
 
@@ -97,11 +102,11 @@ module y_bearing_mount_switch_stl() translate([0,0, Y_bearing_holder_height]) be
 module y_bearing_mounts_stl()
 {
     y_bearing_mount_stl();
-    translate([  bearing_mount_width(Y_bearings) - tab_length + 2,  0, 0]) y_bearing_mount_stl();
-    translate([-(bearing_mount_width(Y_bearings) - tab_length + 2), 0, 0]) y_bearing_mount_switch_stl();
+    // translate([  bearing_mount_width(Y_bearings) - tab_length + 2,  0, 0]) y_bearing_mount_stl();
+    translate([35, 15, 0]) y_bearing_mount_switch_stl();
 }
 
-if(1)
+if(0)
     y_bearing_assembly(Y_bearing_holder_height, false);
 else
     y_bearing_mounts_stl();
