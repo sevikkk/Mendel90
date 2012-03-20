@@ -138,7 +138,7 @@ ribbon_pillar_top = ribbon_clamp_z + ribbon_clamp_length(extruder_ways, ribbon_s
 
 function anti_backlash_height() = 24 + thickness / 2;
 anti_backlash_radius = Z_nut_radius + 0.2;
-anti_backlash_wall = 3;
+anti_backlash_wall = 2.4;
 
 function x_end_ribbon_clamp_y() = mbracket_front + mbracket_depth - mbracket_thickness;
 function x_end_ribbon_clamp_z() = mbracket_height - thickness / 2 - mbracket_thickness - nut_radius(ribbon_nut);
@@ -152,8 +152,15 @@ module x_end_bracket(motor_end, assembly = false){
     else
         stl("x_idler_bracket");
     union(){
-        translate([0, 0, - thickness / 2])
-            z_linear_bearings(motor_end);
+        difference(){
+	        translate([0, 0, - thickness / 2])
+       	     		z_linear_bearings(motor_end);
+		translate([-z_bar_offset(), 0, -thickness / 2])
+                	rotate([0,0,30]) nut_trap((Z_screw_dia + 1) / 2, Z_nut_radius, Z_nut_depth);
+            translate([-z_bar_offset(), 0, thickness / 2 + eta])
+                rotate([0,0,30]) cylinder(r = anti_backlash_radius, h = bearing_height, $fn = 6);
+
+       }
 
         difference(){
             union(){
@@ -165,7 +172,7 @@ module x_end_bracket(motor_end, assembly = false){
                 // Anti-backlash nut holder
                 //
                 translate([-z_bar_offset(), 0, thickness / 2 - eta])
-                    cylinder(r = anti_backlash_radius + anti_backlash_wall, h = anti_backlash_height() - thickness / 2, $fn = 6);
+                    rotate([0,0,30]) cylinder(r = anti_backlash_radius + anti_backlash_wall, h = anti_backlash_height() - thickness / 2, $fn = 6);
 
                 //
                 // Webs from bearing holder
@@ -245,10 +252,10 @@ module x_end_bracket(motor_end, assembly = false){
             // Hole for z leadscrew
             //
             translate([-z_bar_offset(), 0, -thickness / 2])
-                nut_trap((Z_screw_dia + 1) / 2, Z_nut_radius, Z_nut_depth);
+                rotate([0,0,30]) nut_trap((Z_screw_dia + 1) / 2, Z_nut_radius, Z_nut_depth);
 
             translate([-z_bar_offset(), 0, thickness / 2 + eta])
-                cylinder(r = anti_backlash_radius, h = bearing_height, $fn = 6);
+                rotate([0,0,30]) cylinder(r = anti_backlash_radius, h = bearing_height, $fn = 6);
 
             for(side = [-1, 1]) {
                 //
@@ -290,8 +297,10 @@ module x_end_bracket(motor_end, assembly = false){
                             translate([0, 0, -mbracket_thickness])
                                 cube([mbracket_width - 2 * mbracket_thickness,                                          // inside
                                       mbracket_depth - 2 * mbracket_thickness, mbracket_height], center = true);
+				if (0) {
                             translate([0, 0, (mbracket_height - mbracket_thickness) / 2 + layer_height])
                                 cube([mbracket_width - 30, mbracket_depth - 30, assembly ? 10: mbracket_thickness], center = true);    // open top
+				}
 
                         }
                         //
@@ -304,6 +313,7 @@ module x_end_bracket(motor_end, assembly = false){
                     //
                     // ribbon clamp pillar
                     //
+			if (0) {
                     translate([ribbon_clamp_x,
                                ribbon_clamp_y,
                                mbracket_height + (ribbon_pillar_top - mbracket_height - thickness / 2) / 2 - eta])
@@ -320,9 +330,11 @@ module x_end_bracket(motor_end, assembly = false){
                                                    height = ribbon_pillar_top - mbracket_height + thickness / 2,
                                                    h = wall);
                     }
+			}
                     //
                     // Ribbon clamp nut traps
                     //
+		     if (0) {
                     translate([x_motor_offset(), mbracket_front + mbracket_depth - 2 * mbracket_thickness + eta, x_end_ribbon_clamp_z()])
                         rotate([90, 180, 0])
                             ribbon_clamp_holes(x_end_ways, ribbon_screw)
@@ -332,6 +344,7 @@ module x_end_bracket(motor_end, assembly = false){
                                         rotate([0, 90, 180])
                                             right_triangle(width = ribbon_nut_trap_depth, height = ribbon_nut_trap_depth, h = 20);
                                 }
+		   }
 
 
                 }
@@ -366,7 +379,7 @@ module x_end_bracket(motor_end, assembly = false){
                     // Mounting holes
                     //
                     for(x = NEMA_holes(X_motor))                                                         // motor screw holes
-                        for(z = NEMA_holes(X_motor))
+                        for(z = NEMA_holes(X_motor)) {
                             rotate([0, motor_angle, 0])
                             translate([x,0,z])
                                 rotate([90,  -motor_angle, 0]) {
@@ -374,6 +387,12 @@ module x_end_bracket(motor_end, assembly = false){
                                     translate([0, 0, mbracket_thickness])
                                          teardrop_plus(r = (washer_diameter(M3_washer) + 1) / 2, h = 2 * (mbracket_thickness - 3.999), center = true);
                                 }
+                            rotate([0, motor_angle, 0])
+                            translate([x,20,z])
+                                rotate([90,  -motor_angle, 0]) {
+                                    teardrop_plus(r = M3_clearance_radius, h = 20 * mbracket_thickness + 1, center = true);
+                                }
+			}
                 }
                 //
                 // ribbon clamp holes
@@ -388,7 +407,6 @@ module x_end_bracket(motor_end, assembly = false){
                                 translate([0,0, 10])
                                     cylinder(r = 10, h =100);
                             }
-
                 translate([ribbon_clamp_x + ribbon_pillar_thickness, ribbon_clamp_y, ribbon_clamp_z])
                     rotate([-90,90,90])
                         ribbon_clamp_holes(extruder_ways, ribbon_screw)
@@ -544,8 +562,15 @@ module x_end_assembly(motor_end) {
 module x_motor_bracket_stl() translate([0, 0, thickness / 2]) mirror ([1,0,0]) x_end_bracket(true);
 module x_idler_bracket_stl() translate([0, 0, thickness / 2])                  x_end_bracket(false);
 
-//x_end_bracket(false);
+module x_motor_bracket_s_stl() {
+rotate([0,0,90]) mirror ([1,0,0]) intersection() {
+	x_end_bracket(true);
+	translate ([-56,-45,-22]) cube([65,95,85]);
+}
+};
+
+x_motor_bracket_s_stl();
 //x_end_assembly(false);
 
 //mirror ([1,0,0]) x_end_bracket(true);
-mirror ([1,0,0]) x_end_assembly(true);
+//mirror ([1,0,0]) x_end_assembly(true);

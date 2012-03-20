@@ -17,14 +17,16 @@ M12_nut = [12, 21,  9.5, 8, M12_washer, M12_nut_depth];
 LM16UU = [30, 24, 16];
 T5x8 =  [5, 8,  2.25];
 MDF18    = [ "MD", "MDF sheet",    18, [0.4, 0.4, 0.2, 1    ], true];
+NEMA17M  = [42.3, 39.5,   53.6/2, 25,     11,     2,     5,     24,     31 ];
+
 
 Z_bearings = LM16UU;
 Y_bearings = LM16UU;
 X_bearings = LM16UU;
 
-X_motor = NEMA17;
-Y_motor = NEMA17;
-Z_motor = NEMA17;
+X_motor = NEMA17M;
+Y_motor = NEMA17M;
+Z_motor = NEMA17M;
 
 X_travel = 303;
 Y_travel = 250;
