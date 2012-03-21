@@ -107,8 +107,17 @@ module z_coupler_assembly() {
 
     //end("z_coupler_assembly");
 }
+module z_couplings_stl(){
+    a = 17;
+    b = 13;
+    translate([-a, -b, 0]) z_coupling_stl();
+    translate([a, -b, 0]) z_coupling_stl();
+    translate([-a, b, 0]) z_coupling_stl();
+    translate([a, b, 0]) z_coupling_stl();
+    //translate([0, 0, -2.5]) cube([95,65,5],center=true);
+}
 
-if(0)
-    z_coupling_stl();
+if(1)
+    z_couplings_stl();
 else
     z_coupler_assembly();
