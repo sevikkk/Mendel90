@@ -2,10 +2,11 @@
 // Mendel90
 //
 // GNU GPL v2
-// nop.head@gmail.com
-// hydraraptor.blogspot.com
+// seva@sevik.org
 //
-// Configuration file
+// Configuration file for Monsterap
+//
+// https://picasaweb.google.com/114257244810512271993/Monsterap
 //
 echo("Monsterap:");
 // Local vitamins
