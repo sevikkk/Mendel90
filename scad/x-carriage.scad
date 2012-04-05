@@ -15,14 +15,14 @@ use <wade.scad>
 hole = 36;
 width = hole + 2 * bearing_holder_width(X_bearings);
 
-length = 97;
+length = 75;
 top_thickness = 3;
 rim_thickness = 8;
 nut_trap_thickness = 8;
 corner_radius = 5;
 wall = 2.8;
 
-base_offset = nozzle_x_offset;      // offset of base from centre
+base_offset = 0;      // offset of base from centre
 bar_offset = ceil(max(X_bearings[2] / 2 + rim_thickness + 1,                     // offset of carriage origin from bar centres
                  nut_radius(M3_nut) * 2 + belt_thickness(X_belt) + pulley_inner_radius + 6 * layer_height));
 
@@ -235,6 +235,7 @@ bearing_slit = 1;
 
 hole_width = hole - wall - bearing_slit;
 hole_offset = (hole - hole_width) / 2;
+hole_length = 40;
 
 
 module base_shape() {
@@ -300,7 +301,7 @@ module x_carriage_stl(){
                                         difference() {
                                             inner_base_shape();
                                             translate([-base_offset, -hole_offset])
-                                                rounded_square(hole + 2 * wall, hole_width + 2 * wall, corner_radius + wall);
+                                                rounded_square(hole_length + 2 * wall, hole_width + 2 * wall, corner_radius + wall);
 
                                         }
                             }
@@ -335,7 +336,7 @@ module x_carriage_stl(){
 
                 // raised section for nut traps
                 for(a = mounting_holes)
-                    translate([25 * sin(a) - base_offset, 25 * cos(a), (nut_trap_thickness - top_thickness) / 2])
+                    translate([30 * sin(a) - base_offset, 30 * cos(a), (nut_trap_thickness - top_thickness) / 2])
                         cylinder(r = 7, h = nut_trap_thickness - top_thickness, center = true);
 
                 // belt lugs
@@ -355,11 +356,11 @@ module x_carriage_stl(){
             translate([-base_offset, 0, 0]) {
                 // hole to clear the hot end
                 translate([0, - hole_offset])
-                    rounded_rectangle([hole, hole_width, 2 * rim_thickness], corner_radius);
+                    rounded_rectangle([hole_length, hole_width, 2 * rim_thickness], corner_radius);
 
                 // holes for connecting extruder
                 for(a = mounting_holes)
-                    translate([25 * sin(a), 25 * cos(a), nut_trap_thickness - top_thickness]) {
+                    translate([30 * sin(a), 30 * cos(a), nut_trap_thickness - top_thickness]) {
                         *cylinder(h = nut_trap_thickness, r = 7);
                         rotate([0,0,-a])
                             //nut_trap(M4_clearance_radius, M4_nut_radius, M4_nut_trap_depth);
@@ -449,13 +450,16 @@ module x_carriage_assembly(show_extruder = false) {
 }
 
 module x_carriage_parts_stl() {
-    x_belt_clamp_stl();
-    translate([-(lug_width + 2),0,0]) x_belt_grip_stl();
+    rotate([0,0,90]) {
+    translate([2, 2, 0])  x_belt_clamp_stl();
+    translate([-(lug_width + 3),2,0]) x_belt_grip_stl();
     x_carriage_stl();
-    translate([6, 8, 0]) rotate([0, 0, -90]) x_belt_tensioner_stl();
+    translate([8, 11, 0]) rotate([0, 0, -90]) x_belt_tensioner_stl();
+    }
 }
 
-if(0)
-    x_carriage_parts_stl();
-else
+if(1) {
+   translate([0,0,0]) x_carriage_parts_stl();
+   //translate([-0,-8,-2.5]) cube([80, 120, 5], center=true);
+} else
     x_carriage_assembly(true);

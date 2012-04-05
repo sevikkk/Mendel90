@@ -218,10 +218,18 @@ module bar_clamps_2y_stl() {
     //translate([0, 80, 0])                   y_bar_clamp_stl();
 }
 
-if(1)
-    y_bar_clamp_switch_stl();
-else {
-    z_bar_clamp_assembly(Z_bar_dia, gantry_setback, bar_clamp_depth, true);
+module bar_clamps_2z_stl() {
+    translate([30, 5, 0]) rotate([0,0,90])                z_bar_clamp_switch_stl();
+    translate([75, 75, 0]) rotate([0,0,-90]) z_bar_clamp_stl();
+    //translate([gantry_setback + 15, 80, 0]) y_bar_clamp_stl();
+    //translate([0, 80, 0])                   y_bar_clamp_stl();
+}
+
+if(1) {
+    bar_clamps_2z_stl();
+    translate ([0,0,-5]) cube ([100,80,5], center=false);
+} else {
+    z_bar_clamp_stl();
 
 //   difference() {
 //    z_bar_clamp_assembly(Z_bar_dia, gantry_setback, bar_clamp_depth, true);

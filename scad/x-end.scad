@@ -26,9 +26,10 @@ shelf_thickness = 2;
 shelf_clearance = 0.5;
 
 shelves = [ shelf_thickness / 2,
-            shelf_thickness + bearing_length + shelf_clearance + shelf_thickness / 2,
-            bearing_height - shelf_thickness / 2,
-            bearing_height - (shelf_thickness + bearing_length + shelf_clearance + shelf_thickness / 2) ];
+            //shelf_thickness + bearing_length + shelf_clearance + shelf_thickness / 2,
+            bearing_height - shelf_thickness / 2
+            //bearing_height - (shelf_thickness + bearing_length + shelf_clearance + shelf_thickness / 2)
+ ];
 
 actuator_width = 4;
 actuator_depth = 3;
@@ -560,7 +561,7 @@ module x_end_assembly(motor_end) {
 }
 
 module x_motor_bracket_stl() translate([0, 0, thickness / 2]) mirror ([1,0,0]) x_end_bracket(true);
-module x_idler_bracket_stl() translate([0, 0, thickness / 2])                  x_end_bracket(false);
+module x_idler_bracket_stl() translate([-2, 20, thickness / 2]) rotate([0,0,90])                 x_end_bracket(false);
 
 module x_motor_bracket_s_stl() {
 rotate([0,0,90]) mirror ([1,0,0]) intersection() {
@@ -569,8 +570,11 @@ rotate([0,0,90]) mirror ([1,0,0]) intersection() {
 }
 };
 
-x_motor_bracket_s_stl();
+x_idler_bracket_stl();
+translate([0,0,-2.5]) cube([95,65,5], center=true);
+//x_motor_bracket_s_stl();
 //x_end_assembly(false);
+//z_linear_bearings();
 
 //mirror ([1,0,0]) x_end_bracket(true);
 //mirror ([1,0,0]) x_end_assembly(true);
