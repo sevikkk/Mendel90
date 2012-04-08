@@ -50,6 +50,44 @@ module ribbon_clamp(ways, screw_type) {
     }
 }
 
+module ribbon_clamp_holes2(ways1, ways2, screw_type) {
+    pitch1 = ribbon_clamp_pitch(ways1, screw_type);
+    pitch2 = ribbon_clamp_pitch(ways2, screw_type);
+    translate([-pitch1, 0, 0])
+            child();
+    child();
+    translate([pitch2, 0, 0])
+	child();
+}
+
+module ribbon_clamp2(ways1, ways2, screw_type) {
+    hole_rad = screw_clearance_radius(screw_type);
+    stl(str("ribbon_clamp2_",ways1,"_", ways2,"_", 20 * hole_rad));
+    rad = ribbon_clamp_width(screw_type) / 2;
+    slot1 = ribbon_clamp_slot(ways1);
+    slot2 = ribbon_clamp_slot(ways2);
+    pitch1 = ribbon_clamp_pitch(ways1, screw_type);
+    pitch2 = ribbon_clamp_pitch(ways2, screw_type);
+    translate([0,0, -thickness / 2]) difference() {
+        //
+        // body
+        //
+        translate([-pitch1 + (pitch1+pitch2)/2, 0, 0]) slot(r = rad, l = pitch1+pitch2, h = thickness, center=true);
+        //
+        // screw holes
+        //
+        ribbon_clamp_holes2(ways1, ways2, screw_type)
+            poly_cylinder(r = hole_rad, h = thickness + 1, center = true);
+        //
+        // Slot
+        //
+        translate([-pitch1/2, 0,thickness - slot_depth])
+            cube([slot1, 2 * rad + 1,thickness], center = true);
+        translate([pitch2/2, 0,thickness - slot_depth])
+            cube([slot2, 2 * rad + 1,thickness], center = true);
+    }
+}
+
 module ribbon_clamp_assembly(ways, screw_type, screw_length, panel_thickness = 0, vertical = false, washer = false) {
     color(ribbon_clamp_color)
         render() rotate([180, 0, 0])
@@ -78,16 +116,20 @@ module ribbon_clamp_22_40_stl() translate([0,0,thickness]) ribbon_clamp(22, No6_
 module ribbon_clamp_22_44_stl() translate([0,0,thickness]) ribbon_clamp(22, M4_cap_screw);
 
 module ribbon_clamps_stl() {
-    translate([0,-12,0]) ribbon_clamp(bed_ways, cap_screw);
-    translate([0,0,0])   ribbon_clamp(bed_ways, cap_screw);
-    translate([0,12,0])  ribbon_clamp(bed_ways, base_screw);
-    translate([0,25,0]) ribbon_clamp(x_end_ways, frame_screw);
-    translate([0,37,0]) ribbon_clamp(x_end_ways, M3_cap_screw);
-    translate([0,48,0]) ribbon_clamp(extruder_ways, M3_cap_screw);
-    translate([0,59,0]) ribbon_clamp(extruder_ways, M3_cap_screw);
+    translate([0,0,0]) ribbon_clamp2(20,20, frame_screw);
+    translate([0,12,0]) ribbon_clamp2(20,20, frame_screw);
+    translate([0,24,0]) ribbon_clamp2(20,20, frame_screw);
+    translate([0,-12,0]) ribbon_clamp2(20,20, frame_screw);
+    translate([0,-24,0]) ribbon_clamp2(20,20, frame_screw);
+    //translate([0,0,0])   ribbon_clamp(bed_ways, cap_screw);
+    //translate([0,12,0])  ribbon_clamp(bed_ways, base_screw);
+    //translate([0,25,0]) ribbon_clamp(x_end_ways, frame_screw);
+    //translate([0,37,0]) ribbon_clamp(x_end_ways, M3_cap_screw);
+    //translate([0,48,0]) ribbon_clamp(extruder_ways, M3_cap_screw);
+    //translate([0,59,0]) ribbon_clamp(extruder_ways, M3_cap_screw);
 }
 
-if(1)
+if(0)
     ribbon_clamp_assembly(20, M4_cap_screw, 20, 4);
 
 else
