@@ -85,6 +85,49 @@ module fixing_block_stl() {
     }
 }
 
+module pcb_mount(top) {
+    stl("pcb_mount");
+    difference() {
+        translate([-(width - 2 * corner_rad) / 2, 0, 0])
+            minkowski() {
+                cube([width - 2 * corner_rad, depth- corner_rad, height -corner_rad]);
+                intersection() {
+                    sphere(r = corner_rad);
+                    translate([0, 5, 5])
+                        cube([10, 10, 10], center = true);
+                }
+            }
+
+        translate([-width / 2 - 1, thickness, height + eta])                // diagonal slice of the front
+            rotate([-45, 0, 0])
+                cube([width + 2, depth * 2, height]);
+
+
+
+        fixing_block_h_holes(depth - counter_bore_depth)
+            rotate([0,0,0])
+                union() {
+                    vertical_tearslot(h = 100, r = screw_clearance_radius(frame_screw), l = slot, center = true);
+                    multmatrix(m = [ [1, 0, 0, 0],
+                                     [0, 1, shear / counter_bore_depth, 0],
+                                     [0, 0, 1, 0],
+                                     [0, 0, 0, 1] ])
+                    vertical_tearslot(h = 100, r = counter_bore_rad, l = slot, center = false);
+                }
+	translate ([-50,5,0]) rotate ([0,90,0]) cylinder(r=2, h=100);
+	if (top) {
+		translate ([-50,5,-1]) cube([100,20,3], center=false);
+        fixing_block_v_hole(height - counter_bore_depth)
+            rotate([0,0,90])
+                union() {
+                    slot(h = 100, r = screw_clearance_radius(frame_screw), l = 0, center = true);
+                    slot(h = 100, r = counter_bore_rad, l = 0, center = false);
+                }
+	}
+
+    }
+}
+
 module fixing_block_assembly(front = false) {
     color(fixing_block_color) render() fixing_block_stl();
     fixing_block_v_hole(height - counter_bore_depth)
@@ -96,8 +139,13 @@ module fixing_block_assembly(front = false) {
         frame_screw(thickness);
 }
 
-if(0) {
-    fixing_block_stl();
+module pcb_mount_stl() {
+    translate([10,0,0]) rotate([90,0,90]) pcb_mount(true);
+    translate([-10,0,0]) rotate([90,0,90]) pcb_mount(false);
+    translate([-30,0,0]) rotate([90,0,90]) pcb_mount(false);
 }
+
+if(1)
+	pcb_mount_stl();
 else
     fixing_block_assembly();
