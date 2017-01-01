@@ -50,7 +50,7 @@ filament_x = 75;
 filament_z = 15;
 
 width = 28;
-mount_pitch = 50;
+mount_pitch = 105;
 
 pscrew_x = 60;
 pscrew_y = [17.5, 45.5];

@@ -15,8 +15,8 @@ use <wade.scad>
 hole = 36;
 width = hole + 2 * bearing_holder_width(X_bearings);
 
-length = 75;
-top_thickness = 3;
+length = 120;
+top_thickness = 6;
 rim_thickness = 8;
 nut_trap_thickness = 8;
 corner_radius = 5;
@@ -235,7 +235,7 @@ bearing_slit = 1;
 
 hole_width = hole - wall - bearing_slit;
 hole_offset = (hole - hole_width) / 2;
-hole_length = 40;
+hole_length = 80;
 
 
 module base_shape() {
@@ -449,11 +449,29 @@ module x_carriage_assembly(show_extruder = false) {
     end("x_carriage_assembly");
 }
 
+module ext_mount() {
+    
+     difference(convexity=10) {
+	group() {
+		translate([60,15,0]) rotate([90,0,0]) linear_extrude(height=30)
+			polygon([[0,1],[25,25],[25,75],[-5,75],[-5,70],[10,45],[10,30],[-20,1]]);
+		translate([-60,15,0]) rotate([90,0,0]) linear_extrude(height=30)
+			polygon([[0,1],[0,75],[25,75],[25,70],[10,45],[10,1]]);
+	}
+	translate ([-105/2+10, 0, 0]) {
+	       translate([105,0,45]) cylinder(r = 3, h=50);
+       		translate([0,0,45]) cylinder(r = 3, h=50);
+	}
+    }
+}
+
 module x_carriage_parts_stl() {
     rotate([0,0,90]) {
     translate([2, 2, 0])  x_belt_clamp_stl();
     translate([-(lug_width + 3),2,0]) x_belt_grip_stl();
     x_carriage_stl();
+    ext_mount();
+    # translate([10,0,53]) cube([85,95,45],center=true);
     translate([8, 11, 0]) rotate([0, 0, -90]) x_belt_tensioner_stl();
     }
 }
