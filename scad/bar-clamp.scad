@@ -38,7 +38,7 @@ module bar_clamp_holes(d, yaxis) {
             children();
 }
 
-zswitch_tweak = squeeze ? bar_clamp_band - min_wall - No2_pilot_radius - layer_height / 4 : 0;
+zswitch_tweak = squeeze ? bar_clamp_band - min_wall - No2_pilot_radius - layer_height / 4 : -7;
 
 module bar_clamp(d, h, w, switch = false, yaxis = false, zaxis = false) {
     stl(str(yaxis ? "y_bar_clamp" : "z_bar_clamp", (switch && yaxis) ? "_switch" : ""));
@@ -77,6 +77,12 @@ module bar_clamp(d, h, w, switch = false, yaxis = false, zaxis = false) {
                                 circle(r = outer_rad, center = true);                   // band
                             translate([-stem/2 ,h,0])
                                 square([stem - outer_rad, outer_rad]);                  // band tab
+			    if (zaxis) {
+				    translate([z_bar_offset() + stem/2 - outer_rad, h, 0])
+					circle(d=17+6, center = true);                          // support
+				    translate([stem/2 - outer_rad, h - (17+6)/2, 0])
+					square([z_bar_offset(), (17+6)/2]);                          // support
+			    };
 
                         }
                         translate([(stem/2 - outer_rad), h, 0])
@@ -85,6 +91,9 @@ module bar_clamp(d, h, w, switch = false, yaxis = false, zaxis = false) {
                         translate([-rail_offset, h, 0])
                             square([stem, gap]);                                        // gap
 
+			if (zaxis) 
+				translate([z_bar_offset() + stem/2 - outer_rad, h, 0])
+				    circle(d=6, center = true);                          // support
                         }
                     }
                 //
@@ -107,7 +116,7 @@ module bar_clamp(d, h, w, switch = false, yaxis = false, zaxis = false) {
                             if(nutty)
                                 nut_trap(screw_clearance_radius(mount_screw), nut_radius(screw_nut(mount_screw)), nut_depth, true);
                             else
-                                tearslot( h = 100, r = screw_clearance_radius(frame_screw), center = true, w = 2); // mounting screw
+                                tearslot( h = 50, r = screw_clearance_radius(frame_screw), center = true, w = 2); // mounting screw
 
                 if(!yaxis)
                     translate([-w / 2 - axis_end_clearance,
@@ -115,6 +124,14 @@ module bar_clamp(d, h, w, switch = false, yaxis = false, zaxis = false) {
                                h - outer_rad + microswitch_first_hole_x_offset() + zswitch_tweak])
                         rotate([0, 90, 90])
                             microswitch_holes();
+
+	        if (zaxis) {
+		    translate([-2, -rail_offset + z_bar_offset(), h]) {
+		        rotate([0, 90, 0]) difference() {
+				cylinder(h=16, d=17);
+		        }
+		    }
+		}
 
                 *translate([0,-50,-1]) cube([100,100,100]);             // cross section for debug
             }
@@ -141,14 +158,6 @@ module bar_clamp(d, h, w, switch = false, yaxis = false, zaxis = false) {
                         translate([0, - 0.5 * bar_clamp_tab - 0.5,0]) // screwdriver access
                             rotate([0,0,90])
                                 teardrop(h = 100, r = 3, center = true, truncate = false);
-                }
-            }
-            if (zaxis) {
-                translate([0, -rail_offset + z_bar_offset(), h]) {
-                    rotate([0, 90, 0]) difference() {
-                        cylinder(h=6, d=17, center=true);
-                        cylinder(h=8, d=6, center=true);
-                    }
                 }
             }
         }

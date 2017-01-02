@@ -35,7 +35,7 @@ use <x-carriage_assembly.scad>
 
 X = 0 * X_travel / 2; // - limit_switch_offset;
 Y = 0 * Y_travel / 2; // - limit_switch_offset;
-Z = 0.5 * (Z_travel + limit_switch_offset) - hot_end_bodge(hot_end);
+Z = 0.995 * (Z_travel + limit_switch_offset) - hot_end_bodge(hot_end);
 
 //
 // X axis
@@ -128,7 +128,7 @@ Z_motor_length = NEMA_length(Z_motor);
 Z_bar_length = height - Z_motor_length - base_clearance;
 
 module z_end(motor_end) {
-    Z_screw_length = Z0 + Z_travel + x_end_height() + axis_end_clearance
+    Z_screw_length = Z0 + Z_travel + x_end_height() + axis_end_clearance + 20
         - (Z_motor_length + NEMA_shaft_length(Z_motor) + z_coupling_gap());
 
     if(!motor_end && bottom_limit_switch)
@@ -157,7 +157,8 @@ module z_end(motor_end) {
             rod(Z_bar_dia, Z_bar_length);
 
         translate([((motor_end?-1:1) * z_bar_offset()), gantry_setback, Z_bar_length - bar_clamp_depth / 2]) {
-            rotate([90, motor_end ? 90 : - 90, 0])
+            rotate([90, -90, 0])
+	        mirror([0, motor_end ? 1 : 0, 0])
                    z_bar_clamp_assembly(Z_bar_dia, gantry_setback, bar_clamp_depth, !motor_end);
         }
     }

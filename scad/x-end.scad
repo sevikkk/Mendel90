@@ -292,8 +292,12 @@ module x_end_bracket(motor_end, integral_support = false){
 
                 // nut holder tower
                 difference() {
-                    translate([front - length / 2, 0, bearing_height / 2 - thickness / 2])
-                        cube([length, bearing_width, bearing_height], true);
+		    union() {
+                        translate([front - length / 2, 0, bearing_height / 2 - thickness / 2])
+                            cube([length, bearing_width, bearing_height], true);
+                        translate([-15, 10, -thickness/2 + bearing_height - 20])
+                            cylinder(h=20, r1=5, r2=15);
+		    };
 
                     translate([-bearing_depth - length / 2 - eta, 0, nut_shelf - bearing_height / 2])
                         rounded_rectangle([length, bearing_width - 2 * web, bearing_height], 2);
@@ -378,15 +382,15 @@ module x_end_bracket(motor_end, integral_support = false){
                 //
                 // Remove clamp tops
                 //
-                translate([back + (length + 1) / 2 - 0.5, side * (bar_y - X_bar_dia / 2 - clamp_wall - 0.5 + 50), bearing_height / 2])
-                    cube([length + 1, 100, bearing_height], center = true);
+                translate([back + (length + 1) / 2 - 0.5, side * (bar_y - X_bar_dia / 2 - clamp_wall - 0.5 + 50), bearing_height / 4])
+                    cube([length + 1, 100, bearing_height/2], center = true);
                 //
                 // Clamp nut traps
                 //
                 for(x = [front - clamp_hole_inset, back + clamp_hole_inset]) {
                     for(i = [-1,1])
                         translate([x, side * bar_y + i * (X_bar_dia / 2 + M3_clearance_radius), -thickness / 2])
-                            nut_trap(M3_clearance_radius, M3_nut_radius, M3_nut_trap_depth, supported = integral_support);
+                            nut_trap(M3_clearance_radius, M3_nut_radius, M3_nut_trap_depth, supported = integral_support, hole_height=60);
 
                     translate([x, side * bar_y, 0])
                         cube([M3_clearance_radius * 2 - eta, X_bar_dia + M3_clearance_radius * 2, X_bar_dia * 0.8], center = true);

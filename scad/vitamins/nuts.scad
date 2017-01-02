@@ -103,18 +103,18 @@ module wingnut(type) {
 function nut_trap_radius(nut, horizontal = true, snug = true) = (snug ? nut_radius(nut) : nut[6]) + (horizontal ? layer_height / 4 : 0);
 function nut_trap_flat_radius(nut, horizontal = true, snug = true) = nut_trap_radius(nut, horizontal, snug) * cos(30);
 
-module nut_trap(screw_r, nut_r, depth, horizontal = false, supported = false) {
+module nut_trap(screw_r, nut_r, depth, horizontal = false, supported = false, hole_height=200) {
     render(convexity = 5) union() {
         if(horizontal) {
             if(screw_r)
-                teardrop_plus(r = screw_r, h = 200, center = true);
+                teardrop_plus(r = screw_r, h = hole_height, center = true);
             cylinder(r = nut_r + layer_height / 4, h = depth * 2, center = true, $fn = 6);
         }
         else {
             difference() {
                 union() {
                     if(screw_r)
-                        poly_cylinder(r = screw_r, h = 200, center = true);
+                        poly_cylinder(r = screw_r, h = hole_height, center = true);
                     cylinder(r = nut_r, h = depth * 2, center = true, $fn = 6);
                 }
                 if(supported)
