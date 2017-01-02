@@ -40,7 +40,7 @@ module bar_clamp_holes(d, yaxis) {
 
 zswitch_tweak = squeeze ? bar_clamp_band - min_wall - No2_pilot_radius - layer_height / 4 : 0;
 
-module bar_clamp(d, h, w, switch = false, yaxis = false) {
+module bar_clamp(d, h, w, switch = false, yaxis = false, zaxis = false) {
     stl(str(yaxis ? "y_bar_clamp" : "z_bar_clamp", (switch && yaxis) ? "_switch" : ""));
     nutty = yaxis ? base_nut_traps : frame_nut_traps;
     mount_screw = yaxis ? base_screw : frame_screw;
@@ -143,17 +143,25 @@ module bar_clamp(d, h, w, switch = false, yaxis = false) {
                                 teardrop(h = 100, r = 3, center = true, truncate = false);
                 }
             }
+            if (zaxis) {
+                translate([0, -rail_offset + z_bar_offset(), h]) {
+                    rotate([0, 90, 0]) difference() {
+                        cylinder(h=6, d=17, center=true);
+                        cylinder(h=8, d=6, center=true);
+                    }
+                }
+            }
         }
     }
 }
 
-module bar_clamp_assembly(d, h, w, switch = false, yaxis = true) {
+module bar_clamp_assembly(d, h, w, switch = false, yaxis = true, zaxis = false) {
     inner_rad = bar_clamp_inner_rad(d);
     outer_rad = bar_clamp_outer_rad(d);
     length = bar_clamp_length(d);
     rail_offset = bar_rail_offset(d);
 
-    color(clamp_color) render() bar_clamp(d, h, w, switch, yaxis);
+    color(clamp_color) render() bar_clamp(d, h, w, switch, yaxis, zaxis);
     //
     // screw and washer for clamp
     //
@@ -204,7 +212,7 @@ module y_bar_clamp_assembly(d, h, w, switch = false) {
 }
 
 module z_bar_clamp_assembly(d, h, w, switch = false) {
-     bar_clamp_assembly(d, h, w, switch, yaxis = false);
+     bar_clamp_assembly(d, h, w, switch, yaxis = false, zaxis = true);
 }
 
 //bar_clamp(Z_bar_dia, gantry_setback, bar_clamp_depth, true);

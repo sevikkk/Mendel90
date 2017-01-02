@@ -56,10 +56,12 @@ module z_motor_bracket(y_offset, rhs) {
                     //
                     // bar clamp
                     //
-                    translate([z_bar_offset() + clamp_length / 2 - eta, 0, clamp_height / 2 + eta])
-                        cube([clamp_length, clamp_width, clamp_height], center = true);
-                    translate([z_bar_offset(), 0, clamp_height / 2 + eta])
-                        cylinder(h = clamp_height, r = Z_bar_dia/2 + clamp_thickness, center = true);
+                    mirror([(rhs?1:0),0,0]) {
+			    translate([z_bar_offset() + clamp_length / 2 - eta, 0, clamp_height / 2 + eta])
+				cube([clamp_length, clamp_width, clamp_height], center = true);
+			    translate([z_bar_offset(), 0, clamp_height / 2 + eta])
+				cylinder(h = clamp_height, r = Z_bar_dia/2 + clamp_thickness, center = true);
+		    };		
                 }
                 //
                 // front corners rounded
@@ -86,15 +88,17 @@ module z_motor_bracket(y_offset, rhs) {
                 //
                 // bar clamp
                 //
-                translate([z_bar_offset() + clamp_length / 2, 0, 0])                            // clamp slot
-                    cube([clamp_length, gap,  clamp_height * 2 + 1], center = true);
+	        mirror([(rhs?1:0),0,0]) {
+			translate([z_bar_offset() + clamp_length / 2, 0, 0])                            // clamp slot
+			    cube([clamp_length, gap,  clamp_height * 2 + 1], center = true);
 
-                translate([clamp_x, Z_bar_dia / 2 + clamp_thickness, clamp_height / 2])
-                    rotate([90, 0, 0])
-                        nut_trap(screw_clearance_radius, nut_radius, nut_trap_depth, horizontal = true);  // clamp screw
+			translate([clamp_x, Z_bar_dia / 2 + clamp_thickness, clamp_height / 2])
+			    rotate([90, 0, 0])
+				nut_trap(screw_clearance_radius, nut_radius, nut_trap_depth, horizontal = true);  // clamp screw
 
-                translate([z_bar_offset(), 0,  0])
-                    poly_cylinder(r = Z_bar_dia / 2, h = clamp_height * 2 + 1, center = true);       // hole for z rod
+			translate([z_bar_offset(), 0,  0])
+			    poly_cylinder(r = Z_bar_dia / 2, h = clamp_height * 2 + 1, center = true);       // hole for z rod
+		};
 
                 //
                 // screw slots in the back
@@ -143,13 +147,13 @@ module z_motor_assembly(gantry_setback, rhs, rotated = true) {
     //
     // Clamp screw and washer
     //
-    translate([clamp_x, -clamp_width / 2, clamp_height / 2])
+    translate([(rhs?-1:1) * clamp_x, -clamp_width / 2, clamp_height / 2])
         rotate([90, 0, 0])
             screw_and_washer(cap_screw, screw_longer_than(clamp_width + washer_thickness(screw_washer(cap_screw))));
     //
     // Clamp nyloc
     //
-    translate([clamp_x, clamp_width / 2 - nut_trap_depth, clamp_height / 2])
+    translate([(rhs?-1:1) * clamp_x, clamp_width / 2 - nut_trap_depth, clamp_height / 2])
         rotate([-90, 0, 0])
             nut(nut, true);
 
