@@ -127,7 +127,8 @@ module wire_hole_or_slot(r) {
             wire_hole(r);
 }
 
-function z_bar_offset() = round(NEMA_width(Z_motor)) / 2;
+function z_bar_offset() = round(NEMA_width(Z_motor)) / 2  + ((Z_bar_dia > 10) ? ((Z_bar_dia - 10) / 2) : 0);
+echo("Z: ", z_bar_offset());
 
 base_screw = sheet_is_soft(base) ? frame_soft_screw : (base_nuts ? frame_thin_screw : frame_thick_screw);
 base_nut = base_nuts ? screw_nut(base_screw) : false;
