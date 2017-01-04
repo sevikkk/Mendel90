@@ -29,7 +29,7 @@ height = ceil(Z0 + Z_travel + limit_switch_offset + x_end_height() + bar_clamp_d
 
 gantry_thickness = height - max(bed_height + Z_travel + Z_clearance, Y_carriage_depth + 1);
 
-gantry_setback = X_carriage_clearance + x_carriage_width() / 2;
+gantry_setback = X_carriage_clearance + x_carriage_width() / 2 + 20;
 gantry_Y = Y0 + gantry_setback;
 ribbon_clamp_y = Y_carriage_depth / 2 - ribbon_clamp_width(cap_screw);
 ribbon_clamp_z = cnc_sheets ? (Z_travel + Z0 + x_motor_height() + 5 + ribbon_clamp_width(frame_screw) / 2)

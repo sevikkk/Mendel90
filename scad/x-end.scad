@@ -302,7 +302,7 @@ module x_end_bracket(motor_end, integral_support = false){
                     translate([-bearing_depth - length / 2 - eta, 0, nut_shelf - bearing_height / 2])
                         rounded_rectangle([length, bearing_width - 2 * web, bearing_height], 2);
                 }
-                if(motor_end)
+                if(true) {
                     //
                     // limit switch bracket
                     //
@@ -325,11 +325,12 @@ module x_end_bracket(motor_end, integral_support = false){
                             rotate([0, -90, -90])
                                 microswitch_holes(h = sbracket_thickness);
                     }
-                else {
+		};
+                if (true) {
                     //
                     // idler end
                     //
-                    difference() {
+                    mirror([0,(motor_end?1:0),0]) difference() {
                         screw_angle = atan2(M4_clearance_radius - 3.9 / 2, idler_depth);
                         union() {
                             translate([back - idler_width / 2 + eta + corner_rad, idler_back - idler_depth / 2, 0])
@@ -398,8 +399,8 @@ module x_end_bracket(motor_end, integral_support = false){
             }
         }
 
-        if(motor_end) {
-             difference() {
+        if(true) {
+             mirror([0,(motor_end?0:1),0]) difference() {
                 union() {
                     //
                     // Motor bracket
@@ -543,7 +544,7 @@ module x_end_assembly(motor_end) {
                                 screw_longer_than(thickness + washer_thickness(M3_washer) + nut_thickness(M3_nut, true) - nut_trap_depth(M3_nut)));
                 }
 
-    if(motor_end) {
+    mirror([0,(motor_end?0:1),0]) {
         translate([x_motor_offset(), mbracket_front + eta, 0]) {
             rotate([90, motor_angle - 90, 0]) {
                 NEMA(X_motor);
@@ -600,7 +601,7 @@ module x_end_assembly(motor_end) {
             rotate([-90, 90, 90])
                 ribbon_clamp_assembly(extruder_ways, ribbon_screw, 16, wall, true);
     }
-    else {
+    mirror([0,(motor_end?1:0),0]) {
         translate([x_idler_offset(), idler_front - idler_stack / 2 - shift * 4, 0]) {
             for(i = [-1, 1]) {
                 translate([0, (ball_bearing_width(X_idler_bearing) / 2 + shift) * i, 0])
