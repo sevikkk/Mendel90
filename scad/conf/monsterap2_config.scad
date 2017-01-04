@@ -19,16 +19,16 @@ Z_motor = NEMA17;
 
 hot_end = JHeadMk5;
 
-X_travel = 214;
-Y_travel = 214;
-Z_travel = 200;
+X_travel = 300;
+Y_travel = 246;
+Z_travel = 352;
 
-bed_depth = 214;
-bed_width = 214;
+bed_depth = 250;
+bed_width = 260;
 bed_pillars = M3x20_pillar;
 bed_glass = glass2;
 bed_thickness = pcb_thickness + sheet_thickness(bed_glass);    // PCB heater plus glass sheet
-bed_holes = [209, 209];
+bed_holes = [255, 245];
 
 base = MDF12;
 base_corners = 0;

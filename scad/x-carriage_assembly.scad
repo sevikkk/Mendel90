@@ -35,7 +35,7 @@ module x_carriage_assembly(show_extruder = true, show_fan = true) {
     //
     // Fan bracket screws
     //
-    for(side = [-1, 1])
+    if(show_fan) for(side = [-1, 1])
         translate([fan_x + side * front_nut_pitch, -width / 2 - fan_bracket_thickness, front_nut_z]) {
             rotate([90, 0, 0])
                 screw_and_washer(M3_cap_screw, 16);

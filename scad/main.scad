@@ -53,7 +53,7 @@ module x_axis_assembly(show_extruder) {
 
     translate([-X + X_origin, 0, Z + Z0 + x_carriage_offset()])
         rotate([180, 0, 180])
-            x_carriage_assembly(show_extruder, show_fan = true);
+            x_carriage_assembly(false, false);
 
     color(belt_color)
         translate([0, x_belt_offset(), Z + Z0])
@@ -97,16 +97,18 @@ module x_motor_assembly() {
                     z_cable_extra
                 );
 
-    elliptical_cable_strip(
-        extruder_ways,
-        x_end_extruder_ribbon_clamp_offset(),
-        [-X + X_origin - motor_end, 0, x_carriage_offset()] + extruder_connector_offset(),
-        pmax
-    );
+    if (false) {
+	    elliptical_cable_strip(
+		extruder_ways,
+		x_end_extruder_ribbon_clamp_offset(),
+		[-X + X_origin - motor_end, 0, x_carriage_offset()] + extruder_connector_offset(),
+		pmax
+	    );
 
-    translate([-X + X_origin - motor_end + cable_strip_thickness, - ribbon_clamp_width(M3_cap_screw), x_carriage_offset()] + extruder_connector_offset())
-        rotate([-90, 180, 0])
-            d_shell_assembly(NEMA17);
+	    translate([-X + X_origin - motor_end + cable_strip_thickness, - ribbon_clamp_width(M3_cap_screw), x_carriage_offset()] + extruder_connector_offset())
+		rotate([-90, 180, 0])
+		    d_shell_assembly(NEMA17);
+    };
 
     ribbon_cable(x_end_ways,
         10                      // Width of D type
