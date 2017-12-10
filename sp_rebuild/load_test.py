@@ -1,10 +1,11 @@
-from solid import scad_render, use, union, multmatrix, translate
+from solid import scad_render, use, union, multmatrix, translate, solidpython, OpenSCADObject
 from solid.solidpython import extract_callable_signatures, scad_render_to_file
 from solid.utils import draw_segment, Point3, euclidify, Red, Vector3, transform_to_point, Matrix4, scad_matrix, Green
 
 
-class Connector(object):
+class Connector(OpenSCADObject):
     def __init__(self, position, direction, up=None, meta=None):
+        OpenSCADObject.__init__(self, "connector", {})
         self.position = position
         self.direction = direction.normalized()
         self.meta = meta
@@ -28,6 +29,12 @@ class Connector(object):
 
         return out
 
+    def _render(self, render_holes=False):
+        if not self.children:
+            self.add(self.generate())
+
+        return OpenSCADObject._render(self, render_holes)
+
     def transform(self, m):
         new_position = m * self.position
         new_direction = m * self.direction
@@ -37,7 +44,7 @@ class Connector(object):
             new_up = self.up
         return Connector(new_position, new_direction, new_up, self.meta)
 
-class Part(object):
+class Container(OpenSCADObject):
     origin = Connector(
         Point3(0, 0, 0),
         Vector3(0, 1, 0),
@@ -47,9 +54,16 @@ class Part(object):
     output_connectors = {}
 
     def __init__(self, input_connectors=None):
+        OpenSCADObject.__init__(self, "container", {})
         self.position = None
 
         self.adjust_to_input(input_connectors)
+
+    def _render(self, render_holes=False):
+        if not self.children:
+            self.add(self.generate())
+
+        return OpenSCADObject._render(self, render_holes)
 
     def adjust_to_input(self, input_connectors):
         self.position = self.origin
@@ -101,7 +115,7 @@ class Part(object):
         return m
 
 
-class PartXIdlerBracket(Part):
+class PartXIdlerBracket(Container):
     origin = Connector(
         Point3(0, 0, 0),
         Vector3(0, 0, 1),
@@ -130,6 +144,9 @@ class PartXIdlerBracket(Part):
 fn = '../scad/x-end.scad'
 use(fn)
 
+solidpython.non_rendered_classes.append('container')
+solidpython.non_rendered_classes.append('connector')
+
 rod = Connector(Point3(200,0,0), Vector3(1,1,1))
 screw = Connector(Point3(190,10,0), Vector3(1,1,1))
 
@@ -139,18 +156,18 @@ a = PartXIdlerBracket({
 })
 
 out = union()(
-    a.origin.generate(),
+    a.origin,
     a.generate_at_origin(),
-    a.generate(),
-    a.position.generate(),
-    rod.generate(),
-    screw.generate()
+    a,
+    a.position,
+    rod,
+    screw
 )
 connectors = a.output_connectors["x_rods"]
 new_conns = a.generate_output_connectors()
 connectors += new_conns["x_rods"]
 for conn in connectors:
-    out.add(conn.generate())
+    out.add(conn)
 
 scad_render_to_file(out, "/tmp/render.scad", include_orig_code=False)
 
