@@ -270,7 +270,9 @@ module x_idler_support_stl() {
     }
 }
 
-module x_motor_support_stl() mirror([1,0,0]) x_idler_support_stl();
+module x_motor_support_stl() {
+    mirror([1,0,0]) x_idler_support_stl();
+}
 
 module x_end_bracket(motor_end, integral_support = false){
     // Slope the front of the motor bracket to clear the screws and the motor boss if possible
@@ -504,7 +506,9 @@ module x_end_bracket(motor_end, integral_support = false){
     }
 }
 
-module washer_stack(washer, n) if(n == 1) washer(washer) children(); else washer(washer) washer_stack(washer, n - 1) children();
+module washer_stack(washer, n) {
+    if(n == 1) washer(washer) children(); else washer(washer) washer_stack(washer, n - 1) children();
+}
 
 module x_end_assembly(motor_end) {
     motor_rear_screw = screw_shorter_than(NEMA_length(X_motor) + mbracket_thickness + (motor_washers + 2) * washer_thickness(M3_washer) - 8);
@@ -628,12 +632,14 @@ module x_end_assembly(motor_end) {
         end("x_idler_assembly");
 }
 
-module x_motor_bracket_stl(integral_support = true)
+module x_motor_bracket_stl(integral_support = true) {
     translate([0, 0, thickness / 2]) mirror ([1,0,0]) x_end_bracket(true, integral_support);
+}
 
-module x_idler_bracket_stl(integral_support = true)
+module x_idler_bracket_stl(integral_support = true) {
     translate([0, 0, thickness / 2])
         x_end_bracket(false, integral_support);
+}
 
 module x_ends_stl() {
     x_motor_bracket_stl();
