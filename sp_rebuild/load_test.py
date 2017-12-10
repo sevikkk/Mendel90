@@ -1,118 +1,7 @@
-from solid import scad_render, use, union, multmatrix, translate, solidpython, OpenSCADObject
-from solid.solidpython import extract_callable_signatures, scad_render_to_file
-from solid.utils import draw_segment, Point3, euclidify, Red, Vector3, transform_to_point, Matrix4, scad_matrix, Green
-
-
-class Connector(OpenSCADObject):
-    def __init__(self, position, direction, up=None, meta=None):
-        OpenSCADObject.__init__(self, "connector", {})
-        self.position = position
-        self.direction = direction.normalized()
-        self.meta = meta
-        self.up = up
-
-    def generate(self):
-        out = union()(
-            draw_segment(
-                [self.position, -self.direction * 50],
-                vec_color=Red,
-                arrow_rad=3
-            )
-        )
-
-        if self.up:
-            out.add(draw_segment(
-                [self.position, -self.up * 20],
-                vec_color=Green,
-                arrow_rad=2
-            ))
-
-        return out
-
-    def _render(self, render_holes=False):
-        if not self.children:
-            self.add(self.generate())
-
-        return OpenSCADObject._render(self, render_holes)
-
-    def transform(self, m):
-        new_position = m * self.position
-        new_direction = m * self.direction
-        if self.up:
-            new_up = m * self.up
-        else:
-            new_up = self.up
-        return Connector(new_position, new_direction, new_up, self.meta)
-
-class Container(OpenSCADObject):
-    origin = Connector(
-        Point3(0, 0, 0),
-        Vector3(0, 1, 0),
-        Vector3(0, 0, 1)
-    )
-
-    output_connectors = {}
-
-    def __init__(self, input_connectors=None):
-        OpenSCADObject.__init__(self, "container", {})
-        self.position = None
-
-        self.adjust_to_input(input_connectors)
-
-    def _render(self, render_holes=False):
-        if not self.children:
-            self.add(self.generate())
-
-        return OpenSCADObject._render(self, render_holes)
-
-    def adjust_to_input(self, input_connectors):
-        self.position = self.origin
-
-    def generate_at_origin(self):
-        return union()
-
-    def generate(self):
-        obj = self.generate_at_origin()
-
-        m = self.transform_matrix()
-
-        sc_matrix = scad_matrix(m)
-        return multmatrix(m=sc_matrix)(obj)
-
-    def generate_output_connectors(self):
-        m = self.transform_matrix()
-        def _transform(v):
-            if not v:
-                return v
-            if isinstance(v, Connector):
-                return v.transform(m)
-            elif isinstance(v, dict):
-                new_v = {}
-                for k, v1 in v.items():
-                    new_v[k] = _transform(v1)
-                return new_v
-            elif isinstance(v, list):
-                new_v = []
-                for v1 in v:
-                    new_v.append(_transform(v1))
-                return new_v
-            else:
-                raise RuntimeError("Unsupported type")
-
-        return _transform(self.output_connectors)
-
-    def transform_matrix(self):
-        m_rotate_base = Matrix4.new_look_at(
-            Point3(0, 0, 0),
-            -self.origin.direction,
-            self.origin.up).inverse()
-        m = Matrix4.new_look_at(
-            Point3(0, 0, 0),
-            -self.position.direction,
-            self.position.up) * m_rotate_base
-        move = self.position.position - self.origin.position
-        m.d, m.h, m.l = move.x, move.y, move.z
-        return m
+from solid import use, union
+from solid.connectors import Container, Connector
+from solid.solidpython import scad_render_to_file
+from solid.utils import Point3, Vector3
 
 
 class PartXIdlerBracket(Container):
@@ -122,7 +11,7 @@ class PartXIdlerBracket(Container):
         Vector3(-1, 0, 0)
     )
 
-    output_connectors = {
+    origin_output_connectors = {
         "x_rods": [
             Connector(Point3(-10, -30, 10), Vector3(1, 0, 0), Vector3(0,0,1)),
             Connector(Point3(-10,  30, 10), Vector3(1, 0, 0), Vector3(0,0,1)),
@@ -144,9 +33,6 @@ class PartXIdlerBracket(Container):
 fn = '../scad/x-end.scad'
 use(fn)
 
-solidpython.non_rendered_classes.append('container')
-solidpython.non_rendered_classes.append('connector')
-
 rod = Connector(Point3(200,0,0), Vector3(1,1,1))
 screw = Connector(Point3(190,10,0), Vector3(1,1,1))
 
@@ -163,8 +49,8 @@ out = union()(
     rod,
     screw
 )
-connectors = a.output_connectors["x_rods"]
-new_conns = a.generate_output_connectors()
+connectors = a.origin_output_connectors["x_rods"]
+new_conns = a.output_connectors
 connectors += new_conns["x_rods"]
 for conn in connectors:
     out.add(conn)
